@@ -32,7 +32,6 @@ public class AlumnoController {
 
     private boolean validMatricula(String m) {
         if (m == null) return false;
-        // Patrón simple: debe comenzar con 'A' seguido de dígitos (los tests usan "A" + id)
         return m.matches("^A\\d+$");
     }
 
@@ -73,13 +72,11 @@ public class AlumnoController {
 
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Alumno alumno) {
-        // primero asegurar que existe
         if (!store.containsKey(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(Map.of("error","not found"));
         }
         Optional<ResponseEntity<Map<String,Object>>> v = validateAlumno(alumno);
         if (v.isPresent()) return v.get();
-        // asegurar que path id y body id coincidan (opcional)
         if (!Objects.equals(id, alumno.getId())) {
             return badRequest("id en path diferente al id del body");
         }
