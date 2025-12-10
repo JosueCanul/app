@@ -1,0 +1,12 @@
+spring.application.name=
+spring.jpa.hibernate.ddl-auto=
+spring.datasource.url=jdbc:mysql://localhost:3306/aws
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.show-sql=
+aws.accessKeyId=
+aws.secretKey=
+aws.sessionToken=
+aws.s3.bucket=
+aws.s3.region=
