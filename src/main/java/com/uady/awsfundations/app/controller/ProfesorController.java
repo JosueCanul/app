@@ -26,7 +26,7 @@ public class ProfesorController {
     
     private final ProfesorService profesorService;
     
-    @GetMapping
+@GetMapping
     public ResponseEntity<List<Profesor>> findAll() {
         List<Profesor> profesores = profesorService.findAll();
         return ResponseEntity.ok(profesores);
@@ -41,7 +41,7 @@ public class ProfesorController {
     @PostMapping
     public ResponseEntity<Profesor> save(@Valid @RequestBody ProfesorDto profesorDto) {
         Profesor savedProfesor = this.profesorService.save(profesorDto);
-        return ResponseEntity.ok(savedProfesor);
+        return ResponseEntity.status(201).body(savedProfesor);
     }
 
     @PutMapping("/{id}")

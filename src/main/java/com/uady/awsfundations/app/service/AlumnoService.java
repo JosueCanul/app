@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,15 +14,23 @@ import com.uady.awsfundations.app.model.Alumno;
 import com.uady.awsfundations.app.repository.AlumnoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sns.model.PublishRequest;
+import software.amazon.awssdk.services.sns.model.PublishResponse;
 
 @Service
-@AllArgsConstructor
 public class AlumnoService {
 
-    private final AlumnoRepository alumnoRepository;
-    private final AlumnoMapper alumnoMapper;
-    private final S3Service s3Service;
+    @Value("${aws.sns.topic.arn}")
+    private String topicArn;
+    @Autowired
+    private AlumnoRepository alumnoRepository;
+    @Autowired
+    private AlumnoMapper alumnoMapper;
+    @Autowired
+    private S3Service s3Service;
+    @Autowired
+    private SnsClient snsClient;
 
     public List<Alumno> findAll(){
         return alumnoRepository.findAll();
@@ -55,5 +65,31 @@ public class AlumnoService {
         alumno.setPerfilImgURL(profileImgUrl);
         alumnoRepository.save(alumno);
         return profileImgUrl;
+    }
+
+    public String notificarCalificaciones(Integer alumnoId) {
+        Alumno alumno = this.findById(alumnoId); 
+        String nombres = alumno.getNombres();
+        String apellidos = alumno.getApellidos();
+        Double promedio = alumno.getPromedio();
+        String mensaje = String.format(
+            "Reporte de Calificaciones\n" +
+            "-------------------------\n" +
+            "Alumno: %s %s\n" +
+            "Calificación Final: %.2f\n" +
+            "-------------------------\n" +
+            "Enviado desde el sistema de la UADY.",
+            nombres, apellidos, promedio
+        );
+
+        PublishRequest request = PublishRequest.builder()
+                .topicArn(topicArn)
+                .message(mensaje)
+                .subject("Alerta Académica: " + nombres + " " + apellidos) // Asunto del correo
+                .build();
+
+        PublishResponse result = snsClient.publish(request);
+
+        return result.messageId();
     }
 }

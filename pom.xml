@@ -52,11 +52,21 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.16.1</version> 
 		</dependency>
-		<!-- AWS SDK for S3 -->
+		<!-- AWS SDK Dependencies -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>1.12.260</version>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-dynamodb</artifactId>
+			<version>1.12.260</version>
+		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>sns</artifactId>
+			<version>2.20.0</version> 
 		</dependency>
 		<!-- Spring Boot Starter Web for RESTful APIs -->
 		<dependency>
@@ -90,12 +100,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 <build>
     <plugins>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.13.0</version>
+            <version>3.14.0</version>
             <configuration>
                 <source>21</source>
                 <target>21</target>
